@@ -4,24 +4,20 @@
 
 class ParticleSystem {
 private:
-   float size;
+   Particle particleTemplate;
    int spawnSpeed;
-   float speed;
    int nb;
    std::vector<Particle> ps;
    Timer timer;
    std::thread* gen;
 public:
-   ParticleSystem(int nb, float size, int spawnSpeed, float speed)
-   : size(size),
-   nb(nb),
-   spawnSpeed(spawnSpeed),
-   speed(speed) {
+   ParticleSystem(int nb, int spawnSpeed, Particle& p)
+      : nb(nb),
+        spawnSpeed(spawnSpeed),
+        particleTemplate(p) {
       srand(time(NULL));
       gen = timer.interval([&]() {
-         //Vector d((float) ((rand()%200) - 100)/100.0f, (float) ((rand()%200) - 100) /100.0f);
-         Vector d(-1, -1);
-         ps.push_back(Particle(0, d, speed));
+         ps.push_back(Particle(particleTemplate));
       }, spawnSpeed);
       timer.delay([&]() {
          timer.stop(gen);
@@ -35,9 +31,13 @@ public:
       for (Particle& p : ps) {
          if (p.isDead()) {
             Vector d((float) (rand()%200 - 100)/100.0f, (float) (rand()%200 - 100)/100.0f);
-            p.reset(size, d, x, y);
+            if (p.isCircle())
+               p.reset(particleTemplate.getRadius(), d, x, y);
+            else if (p.isRect())
+               p.reset(particleTemplate.getSide(), d, x, y);
          }
          p.update(window);
       }
    }
 };
+

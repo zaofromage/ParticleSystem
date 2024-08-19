@@ -9,7 +9,8 @@ int main() {
    window.setFramerateLimit(60);
    int mouseX = 100;
    int mouseY = 100;
-   ParticleSystem ps(30, 10, 500, 0.5f);
+   Particle p(20, 0.5, sf::Color::Red);
+   ParticleSystem ps(30, 20, p);
 
    while(window.isOpen()) {
       sf::Event event;
